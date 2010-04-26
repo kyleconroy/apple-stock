@@ -2,6 +2,7 @@ import csv
 import re
 import json
 from datetime import datetime
+from datetime import date
 from datetime import timedelta
 
 def get_stock_prices(csv_file):
@@ -46,17 +47,26 @@ def find_price(prices, date):
         
     
 def calculate_lost_money(prices, products, current_price):
+    first_split = datetime(2000,1,21)
+    second_split = datetime(2005,2,28)
+    
     for product in products:
         
         price = float(product["original-price"])
         
         if price > 0:
-            old_stock_price = find_price(prices, product["introduction-date"])
+            intro_date = product["introduction-date"]
+            old_stock_price = find_price(prices, intro_date)
             shares = price / old_stock_price
-            current_value = shares * current_price
-            product["stock-value"] = current_value
+            
+            if intro_date < first_split:
+                shares = shares * 4
+            elif intro_date < second_split:
+                shares = shares * 2
+                
+            product["stock-shares"] = shares
         else:
-            product["stock-value"] = 0
+            product["stock-shares"] = 0
             
         product["introduction-date"] = product["introduction-date"].isoformat()
     
