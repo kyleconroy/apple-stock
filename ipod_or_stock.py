@@ -59,11 +59,6 @@ def calculate_lost_money(prices, products, current_price):
             old_stock_price = find_price(prices, intro_date)
             shares = price / old_stock_price
             
-            if intro_date < first_split:
-                shares = shares * 4
-            elif intro_date < second_split:
-                shares = shares * 2
-                
             product["stock-shares"] = shares
         else:
             product["stock-shares"] = 0
