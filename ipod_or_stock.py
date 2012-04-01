@@ -6,7 +6,7 @@ from datetime import date
 from datetime import timedelta
 
 def get_stock_prices(csv_file):
-    current_price = 0
+    current_price = 599.55 # March 30, 2012
     prices = {}
     stockReader = csv.reader(open(csv_file), delimiter=',')
     
@@ -62,14 +62,15 @@ def calculate_lost_money(prices, products, current_price):
             intro_date = product["introduction-date"]
             old_stock_price = find_price(prices, intro_date)
             shares = price / old_stock_price
-            
             product["stock-shares"] = shares
         else:
-            product["stock-shares"] = 0
-            
+            shares = 0
+            product["stock-shares"] = shares
+
         product["introduction-date"] = product["introduction-date"].isoformat()
     
     return products
+
 
 if __name__ == '__main__':
     stock_csv = "apple_stock_data.csv"
