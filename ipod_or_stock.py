@@ -24,7 +24,11 @@ def get_products(json_file):
     products = json.load(open(json_file))
     
     for product in products:
-        price =  product["original-price"]
+        try:
+            price =  product["original-price"]
+        except KeyError:
+            price =  product["original-price-us"]
+
         match = re.match(r"US\$(\d+).*",price)
         if match:
             product["original-price"] = float(match.groups()[0])
