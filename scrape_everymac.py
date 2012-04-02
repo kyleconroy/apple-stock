@@ -66,7 +66,6 @@ def parse_all_products():
     data = []
     
     for url in urls:
-        print url
         products = parse_products(url)
         data += products
         specs = open('apple-specs.json', 'w')
