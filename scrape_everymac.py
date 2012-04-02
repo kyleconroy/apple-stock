@@ -2,6 +2,7 @@
 # to make it pretty
 # Huge thanks to everymac for all the information
 
+import urllib
 import urllib2
 from BeautifulSoup import BeautifulSoup
 import re, htmlentitydefs
@@ -72,15 +73,28 @@ def parse_all_products():
         json.dump(data, specs, sort_keys = True, indent = 4)
         specs.close()
         
+def url_fetch(url):
+    print url
 
+    try:
+        os.mkdir("cache")
+    except OSError:
+        pass
+
+    _, filename = os.path.split(url)
+    cached_file = os.path.join("cache", filename)
+
+    if not os.path.exists(cached_file):
+        urllib.urlretrieve(url, cached_file) 
+
+    return open(cached_file)
+ 
 
 def parse_products(url):
     products = []
+
+    soup = BeautifulSoup(url_fetch(url))
     u = urlparse.urlparse(url)
-    
-    data = urllib2.urlopen(url)
-    soup = BeautifulSoup(data.read())
-    
     
     for span in soup.findAll('span', id="contentcenter_specs_externalnav_2"):
         a = span.a
@@ -94,11 +108,8 @@ def parse_products(url):
     return products
 
 def parse_product(url):
-    print url
-    data = urllib2.urlopen(url)
-    
     try:
-        soup = BeautifulSoup(data.read())
+        soup = BeautifulSoup(url_fetch(url))
     except HTMLParser.HTMLParseError:
         print "Could not parse %s" % url
         return None
